@@ -8,5 +8,6 @@ pdfplumber
 python-docx
 reportlab
 anthropic
+psycopg[binary]
 pytest
 httpx

@@ -56,6 +56,17 @@ templates.env.globals["company"] = os.getenv("COMPANY_NAME", "Cloud Reboot")
 Base.metadata.create_all(engine)
 
 
+def _bootstrap_recruiter():
+    email, pw = os.getenv("ADMIN_EMAIL", "").strip().lower(), os.getenv("ADMIN_PASSWORD", "")
+    if not email or len(pw) < 8:
+        return
+    from .db import SessionLocal
+    with SessionLocal() as db:
+        if not db.scalar(select(Recruiter).where(Recruiter.email == email)):
+            db.add(Recruiter(email=email, password_hash=hash_pw(pw)))
+            db.commit()
+
+
 def hash_pw(pw: str, salt: bytes | None = None) -> str:
     salt = salt or secrets.token_bytes(16)
     h = hashlib.pbkdf2_hmac("sha256", pw.encode(), salt, 200_000)
@@ -65,6 +76,9 @@ def hash_pw(pw: str, salt: bytes | None = None) -> str:
 def check_pw(pw: str, stored: str) -> bool:
     salt_hex, h = stored.split("$")
     return hmac.compare_digest(hash_pw(pw, bytes.fromhex(salt_hex)).split("$")[1], h)
+
+
+_bootstrap_recruiter()
 
 
 class NeedLogin(Exception):
