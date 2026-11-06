@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+sqlalchemy
+jinja2
+python-multipart
+itsdangerous
+pdfplumber
+python-docx
+reportlab
+anthropic
+pytest
+httpx
