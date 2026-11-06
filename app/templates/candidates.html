@@ -1,0 +1,39 @@
+{% extends "app.html" %}{% block title %}{{ job.title }}{% endblock %}
+{% block content %}
+<div class="head rise">
+  <div><span class="eyebrow"><a href="/recruiter" style="color:inherit">Jobs</a> / {{ "Open" if job.is_open else "Closed" }}</span><h1>{{ job.title }}</h1></div>
+  <div class="acts">
+    <form method="post" action="/recruiter/jobs/{{ job.id }}/rescore"><button class="btn">Re-score all</button></form>
+    <a class="btn" href="/recruiter/jobs/{{ job.id }}/edit">Edit job</a>
+  </div>
+</div>
+
+<nav class="seg rise" style="--i:1" aria-label="Filter candidates">
+{% for v,l in [("all","All"),("review","Needs review"),("reject_queue","Reject queue"),("shortlisted","Shortlisted"),("hold","On hold"),("rejected","Rejected")] %}
+<a class="{{ 'on' if view==v }}" href="?view={{ v }}">{{ l }} <i>{{ counts[v] }}</i></a>{% endfor %}
+</nav>
+
+<div class="card rise" style="--i:2;padding:0">
+  <div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th>Candidate</th><th style="width:230px">Score <span style="text-transform:none;letter-spacing:0;color:var(--dim)">(ticks: reject / shortlist)</span></th><th>Suggested</th><th>Decision</th></tr></thead>
+    <tbody>
+    {% for a in apps %}
+    {% set p = a.candidate.name.split() %}
+    <tr>
+      <td><a class="who" href="/recruiter/applications/{{ a.id }}">
+        <span class="avatar">{{ p[0][:1]|upper }}{{ p[-1][:1]|upper if p|length > 1 }}</span>
+        <span style="min-width:0"><span class="n">{{ a.candidate.name }}</span><small title="{{ a.explanation }}">{{ a.explanation or a.candidate.email }}</small></span></a></td>
+      <td>{% if a.score is not none %}
+        <div style="display:flex;align-items:center;gap:14px"><span class="score" style="width:38px">{{ '%g'|format(a.score) }}</span>
+        <div class="meter {{ a.auto_status }}" style="flex:1;--v:{{ a.score }};--r:{{ job.reject_threshold }};--s:{{ job.shortlist_threshold }};--i:{{ loop.index0 if loop.index0 < 14 else 14 }}"><span class="fill"></span><span class="tick r"></span><span class="tick s"></span></div></div>
+        {% else %}<span class="dim mono">scoring…</span>{% endif %}</td>
+      <td><span class="chip {{ a.auto_status }}">{{ {"shortlist":"Shortlist","review":"Review","reject":"Reject","pending":"Pending"}[a.auto_status] }}</span></td>
+      <td><span class="chip {{ a.status }}">{{ {"new":"Undecided","shortlisted":"Shortlisted","hold":"On hold","rejected":"Rejected"}[a.status] }}</span></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4"><div class="empty"><b>Nothing here</b>No candidates match this view.</div></td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</div>
+{% endblock %}

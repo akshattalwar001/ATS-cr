@@ -1,0 +1,35 @@
+{% extends "app.html" %}{% block title %}Jobs{% endblock %}
+{% block content %}
+<div class="head rise">
+  <div><span class="eyebrow">Workspace</span><h1>Jobs</h1></div>
+  <div class="acts"><a class="btn primary" href="/recruiter/jobs/new">New job</a></div>
+</div>
+
+<div class="stats">
+  <div class="stat rise" style="--i:1"><span class="eyebrow">Applicants</span><b>{{ stats.values()|sum(attribute='total') }}</b></div>
+  <div class="stat rise" style="--i:2"><span class="eyebrow">Need your review</span><b style="color:var(--warn)">{{ stats.values()|sum(attribute='to_review') }}</b></div>
+  <div class="stat rise" style="--i:3"><span class="eyebrow">Reject queue</span><b style="color:var(--bad)">{{ stats.values()|sum(attribute='reject_queue') }}</b></div>
+  <div class="stat rise" style="--i:4"><span class="eyebrow">Open roles</span><b>{{ jobs|selectattr('is_open')|list|length }}</b></div>
+</div>
+
+<div class="card rise" style="--i:5;padding:0">
+  <div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th>Role</th><th>Status</th><th class="num">Applicants</th><th class="num">To review</th><th class="num">Reject queue</th><th>Scoring</th></tr></thead>
+    <tbody>
+    {% for j in jobs %}
+    <tr>
+      <td><a class="who" href="/recruiter/jobs/{{ j.id }}"><span><span class="n">{{ j.title }}</span><small>{{ j.location or "Flexible" }}</small></span></a></td>
+      <td><span class="chip {{ 'shortlist' if j.is_open else 'new' }}">{{ "Open" if j.is_open else "Closed" }}</span></td>
+      <td class="num mono">{{ stats[j.id].total }}</td>
+      <td class="num mono" {% if stats[j.id].to_review %}style="color:var(--warn)"{% endif %}>{{ stats[j.id].to_review }}</td>
+      <td class="num mono" {% if stats[j.id].reject_queue %}style="color:var(--bad)"{% endif %}>{{ stats[j.id].reject_queue }}</td>
+      <td><span class="chip plain">{{ "Rules + Claude" if j.use_llm else "Rules" }}</span></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6"><div class="empty"><b>No jobs yet</b>Create your first job to start receiving applications.</div></td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</div>
+<p class="dim rise" style="--i:6;margin-top:16px;font-size:13px">Claude scoring: {{ "API key found." if llm_ok else "no API key set, so jobs use rules only." }}</p>
+{% endblock %}

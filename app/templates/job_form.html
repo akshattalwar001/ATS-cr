@@ -1,0 +1,44 @@
+{% extends "app.html" %}{% block title %}{{ "Edit job" if job else "New job" }}{% endblock %}
+{% block content %}
+<div class="head rise">
+  <div><span class="eyebrow">{{ job.title if job else "Jobs" }}</span><h1>{{ "Edit job" if job else "New job" }}</h1></div>
+</div>
+<form method="post" action="/recruiter/jobs/save" style="max-width:760px">
+<input type="hidden" name="job_id" value="{{ job.id if job else 0 }}">
+
+<div class="card rise" style="--i:1">
+  <h2>The role</h2>
+  <label class="f" style="margin-top:0"><span>Title</span><input name="title" required value="{{ job.title if job else '' }}"></label>
+  <label class="f"><span>Location</span><input name="location" value="{{ job.location if job else '' }}"></label>
+  <label class="f"><span>Description</span><textarea name="description" rows="6">{{ job.description if job else '' }}</textarea></label>
+  <label class="check"><input type="checkbox" name="is_open" {{ "checked" if (not job or job.is_open) }}><span><b>Accepting applications</b> Shows this role on the careers site.</span></label>
+</div>
+
+<div class="card rise" style="--i:2">
+  <h2>What a match looks like</h2>
+  <label class="f" style="margin-top:0"><span>Required skills</span><input name="required_skills" value="{{ job.required_skills|join(', ') if job else '' }}"><small>Comma separated. Worth 55 of 100 points.</small></label>
+  <label class="f"><span>Nice-to-have skills</span><input name="nice_skills" value="{{ job.nice_skills|join(', ') if job else '' }}"><small>Worth 15 points.</small></label>
+  <div class="row">
+    <label class="f"><span>Minimum years of experience</span><input type="number" step="0.5" min="0" name="min_years" value="{{ job.min_years if job else 0 }}"></label>
+    <label class="f"><span>Education</span><select name="education_level">
+      {% for v,l in [("","Any"),("bachelor","Bachelor's or higher"),("master","Master's or higher"),("phd","PhD")] %}<option value="{{ v }}" {{ "selected" if job and job.education_level==v }}>{{ l }}</option>{% endfor %}
+    </select></label>
+  </div>
+  <label class="f"><span>Must-have keywords</span><input name="knockouts" value="{{ job.knockouts|join(', ') if job else '' }}"><small>A resume missing any of these lands in the reject queue, for a person to confirm. Example: work permit.</small></label>
+</div>
+
+<div class="card rise" style="--i:3">
+  <h2>Sorting thresholds</h2>
+  <div class="row">
+    <label class="f" style="margin-top:0"><span>Suggest shortlist at or above</span><input type="number" min="0" max="100" name="shortlist_threshold" value="{{ job.shortlist_threshold if job else 70 }}"></label>
+    <label class="f" style="margin-top:0"><span>Suggest reject below</span><input type="number" min="0" max="100" name="reject_threshold" value="{{ job.reject_threshold if job else 35 }}"></label>
+  </div>
+  <label class="check"><input type="checkbox" name="use_llm" {{ "checked" if job and job.use_llm }}><span><b>Add Claude scoring</b> Averages with the rule score and costs tokens per resume.{{ "" if llm_ok else " No API key is set, so this has no effect yet." }}</span></label>
+</div>
+
+<div class="rise" style="--i:4;display:flex;gap:10px;margin-top:20px">
+  <button class="btn primary">Save job</button>
+  <a class="btn ghost" href="{{ '/recruiter/jobs/' ~ job.id if job else '/recruiter' }}">Cancel</a>
+</div>
+</form>
+{% endblock %}

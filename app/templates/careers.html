@@ -1,0 +1,24 @@
+{% extends "base.html" %}{% block title %}Open roles{% endblock %}
+{% block content %}
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow rise">{{ jobs|length }} open {{ "role" if jobs|length == 1 else "roles" }}</div>
+    <h1 class="rise" style="--i:1;margin-top:22px">Do your best work <em>with us.</em></h1>
+    <p class="rise" style="--i:2">Software helps us sort applications. People read every one and make every decision.</p>
+  </section>
+  <section class="roles" aria-label="Open roles">
+    {% for j in jobs %}
+    <a class="role rise" style="--i:{{ loop.index + 2 }}" href="/jobs/{{ j.id }}">
+      <div>
+        <h2>{{ j.title }}</h2>
+        <div class="meta"><span class="chip plain">{{ j.location or "Flexible" }}</span>{% if j.min_years %}<span class="chip plain">{{ j.min_years|round|int }}+ yrs</span>{% endif %}</div>
+      </div>
+      <span class="go" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      {% if j.description %}<p class="d">{{ j.description[:180] }}{% if j.description|length > 180 %}…{% endif %}</p>{% endif %}
+    </a>
+    {% else %}
+    <div class="empty"><b>No open roles right now</b>Check back soon.</div>
+    {% endfor %}
+  </section>
+</div>
+{% endblock %}

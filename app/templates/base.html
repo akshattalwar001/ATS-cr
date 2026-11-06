@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head>
+<title>{% block title %}Careers{% endblock %} · {{ company }}</title>
+{% include "_head.html" %}
+</head><body>
+<header class="pub-top"><div class="in">
+  <a class="brand" href="/" aria-label="{{ company }} careers"><img src="/brand/logo.svg" alt="{{ company }}" height="28"></a>
+  <span class="sp"></span>
+  <a class="lnk" href="/">Open roles</a>
+  {% if request.session.get('user') %}<a class="lnk" href="/recruiter">Recruiter workspace</a>
+  {% else %}<a class="lnk" href="/recruiter/login">Recruiter sign in</a>{% endif %}
+</div></header>
+{% block content %}{% endblock %}
+<footer class="foot"><span>{{ company }}</span></footer>
+</body></html>

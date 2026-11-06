@@ -1,0 +1,35 @@
+{% extends "base.html" %}{% block title %}{{ job.title }}{% endblock %}
+{% block content %}
+<div class="wrap"><div class="jobgrid">
+  <section>
+    <a class="mut" href="/" style="font-size:14px">&larr; All roles</a>
+    <div class="eyebrow rise" style="margin-top:36px">{{ job.location or "Flexible" }}{% if job.min_years %} · {{ job.min_years|round|int }}+ years{% endif %}</div>
+    <h1 class="rise" style="--i:1;margin-top:18px">{{ job.title }}</h1>
+    {% if job.description %}<p class="desc rise" style="--i:2">{{ job.description }}</p>{% endif %}
+    {% if job.required_skills %}<div class="rise" style="--i:3;margin-top:36px"><div class="eyebrow">What you bring</div>
+      <div class="tags">{% for s in job.required_skills %}<span class="tag">{{ s }}</span>{% endfor %}</div></div>{% endif %}
+    {% if job.nice_skills %}<div class="rise" style="--i:4;margin-top:28px"><div class="eyebrow">A plus</div>
+      <div class="tags">{% for s in job.nice_skills %}<span class="tag">{{ s }}</span>{% endfor %}</div></div>{% endif %}
+  </section>
+
+  <aside class="apply rise" style="--i:2">
+    <div class="card">
+      <h2 style="font-size:20px;margin-bottom:4px">Apply for this role</h2>
+      <p class="mut" style="font-size:14px">Takes about two minutes.</p>
+      {% if done == "1" %}<div class="notice ok" style="margin-top:18px">Application received. We will be in touch by email.</div>
+      {% elif done == "dup" %}<div class="notice err" style="margin-top:18px">You already applied to this role with that email address.</div>{% endif %}
+      <form method="post" action="/jobs/{{ job.id }}/apply" enctype="multipart/form-data">
+        <label class="f"><span>Full name</span><input name="name" autocomplete="name" required></label>
+        <div class="row">
+          <label class="f"><span>Email</span><input type="email" name="email" autocomplete="email" required></label>
+          <label class="f"><span>Phone <em style="font-style:normal;color:var(--dim)">(optional)</em></span><input name="phone" autocomplete="tel"></label>
+        </div>
+        <label class="f"><span>Resume</span><input type="file" name="resume" accept=".pdf,.docx,.txt" required><small>PDF, DOCX or TXT, up to 5 MB.</small></label>
+        <label class="check"><input type="checkbox" name="consent" required>
+          <span><b>I agree to how my data is used.</b> You store my application and use automated scoring to help sort it. A person makes every final decision.</span></label>
+        <p style="margin-top:22px"><button class="btn primary" style="width:100%;justify-content:center;height:44px">Submit application</button></p>
+      </form>
+    </div>
+  </aside>
+</div></div>
+{% endblock %}

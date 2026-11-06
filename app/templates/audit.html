@@ -1,0 +1,14 @@
+{% extends "app.html" %}{% block title %}Audit log{% endblock %}
+{% block content %}
+<div class="head rise"><div><span class="eyebrow">Compliance</span><h1>Audit log</h1></div></div>
+<div class="card rise" style="--i:1;padding:0"><div class="tbl-wrap"><table class="tbl">
+  <thead><tr><th>When</th><th>Who</th><th>Action</th><th>Application</th><th>Detail</th></tr></thead>
+  <tbody>
+  {% for r in rows %}
+  <tr><td class="mono dim" style="white-space:nowrap">{{ r.at.strftime("%Y-%m-%d %H:%M") }}</td><td>{{ r.actor }}</td>
+  <td><span class="chip plain">{{ r.action }}</span></td>
+  <td class="mono">{% if r.application_id %}<a style="color:var(--acc)" href="/recruiter/applications/{{ r.application_id }}">#{{ r.application_id }}</a>{% endif %}</td>
+  <td class="mut mono" style="font-size:12.5px">{{ r.detail }}</td></tr>
+  {% else %}<tr><td colspan="5"><div class="empty"><b>No activity yet</b>Scores and decisions will appear here.</div></td></tr>{% endfor %}
+  </tbody></table></div></div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block title %}Recruiter sign in{% endblock %}
+{% block content %}
+<div class="auth"><div class="card rise">
+  <div class="eyebrow">Recruiter workspace</div>
+  <h1 style="margin-top:14px">Sign in</h1>
+  {% if error %}<div class="notice err" style="margin-top:18px">{{ error }}</div>{% endif %}
+  <form method="post">
+    <label class="f"><span>Work email</span><input type="email" name="email" autocomplete="username" required autofocus></label>
+    <label class="f"><span>Password</span><input type="password" name="password" autocomplete="current-password" required></label>
+    <p style="margin-top:24px"><button class="btn primary" style="width:100%;justify-content:center;height:44px">Sign in</button></p>
+  </form>
+</div></div>
+{% endblock %}
