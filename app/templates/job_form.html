@@ -24,7 +24,7 @@
       {% for v,l in [("","Any"),("bachelor","Bachelor's or higher"),("master","Master's or higher"),("phd","PhD")] %}<option value="{{ v }}" {{ "selected" if job and job.education_level==v }}>{{ l }}</option>{% endfor %}
     </select></label>
   </div>
-  <label class="f"><span>Must-have keywords</span><input name="knockouts" value="{{ job.knockouts|join(', ') if job else '' }}"><small>A resume missing any of these lands in the reject queue, for a person to confirm. Example: work permit.</small></label>
+  <label class="f"><span>Must-have keywords</span><input name="knockouts" value="{{ job.knockouts|join(', ') if job else '' }}"><small>A resume missing any of these is flagged for review, for a person to confirm. Example: work permit.</small></label>
 </div>
 
 <div class="card rise" style="--i:3">

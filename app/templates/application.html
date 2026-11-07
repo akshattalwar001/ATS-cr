@@ -36,6 +36,9 @@
       <div class="meter"><span class="fill" style="--v:{{ (a.breakdown[k] / mx * 100)|round(1) }}"></span></div></div>{% endif %}{% endfor %}
       {% if "llm_score" in a.breakdown %}<p class="mut mono" style="margin-top:18px;font-size:12.5px">Rules {{ '%g'|format(a.breakdown.rule_score) }} · Claude {{ '%g'|format(a.breakdown.llm_score) }}</p>{% endif %}
       <p class="why">{{ a.explanation }}</p>
+      {% if a.ai_review %}<div class="aireview">
+      <div class="hd"><svg class="spark" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1 6 4 9 10 10-6 1-9 4-10 10-1-6-4-9-10-10 6-1 9-4 10-10z"/></svg><span>AI review</span><span class="model">gpt-oss-120b</span></div>
+      <p>{{ a.ai_review }}</p></div>{% endif %}
       {% else %}<p class="mut" style="margin-top:12px">{{ a.explanation or "Scoring in progress. Refresh in a moment." }}</p>{% endif %}
     </div>
 
