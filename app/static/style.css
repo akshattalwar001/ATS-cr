@@ -181,6 +181,19 @@ input[type=file]::file-selector-button{margin-right:14px;background:var(--s3);co
 .part .top b{font:500 13px var(--mono);color:var(--tx)}
 .part .meter{height:4px}.part .meter .fill{background:var(--acc)}
 .why{margin-top:18px;color:#c9c6c0;font-size:14px;line-height:1.6}
+.aireview{position:relative;margin-top:18px;padding:17px 18px 18px 20px;border-radius:14px;overflow:hidden;
+  background:radial-gradient(135% 95% at 0 0,rgba(239,65,35,.10),transparent 55%),linear-gradient(180deg,var(--s3),var(--s1));
+  border:1px solid var(--line2);animation:aiup .5s var(--ease) both}
+.aireview::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--acc-hi),var(--acc) 45%,transparent)}
+.aireview .hd{display:flex;align-items:center;gap:9px;margin-bottom:12px;
+  font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.aireview .hd .spark{flex:none;color:var(--acc-hi);filter:drop-shadow(0 0 6px rgba(239,65,35,.55));animation:aispark 3s var(--ease) infinite}
+.aireview .hd .model{margin-left:auto;text-transform:none;letter-spacing:.02em;color:var(--dim)}
+.aireview p{margin:0;color:var(--tx);font-size:14px;line-height:1.72;white-space:pre-wrap}
+@keyframes aiup{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes aispark{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){.aireview,.aireview .hd .spark{animation:none}}
 .viewer{width:100%;height:78vh;border:1px solid var(--line2);border-radius:12px;background:#fff}
 pre.txt{white-space:pre-wrap;margin:0;font:13px/1.7 var(--mono);color:#c9c6c0}
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
