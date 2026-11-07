@@ -25,7 +25,7 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 ALLOWED_EXT = {".pdf", ".docx", ".txt"}
 MAX_BYTES = 5 * 1024 * 1024
 
-app = FastAPI(title="ATS")
+app = FastAPI(title="ATS", docs_url=None, redoc_url=None, openapi_url=None)
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY", "dev-only-change-me"))
 app.mount("/static", StaticFiles(directory=str(BASE / "static")), name="static")
 SVG_HEADERS = {"Cache-Control": "public, max-age=3600"}
@@ -54,6 +54,20 @@ def brand_favicon_recruiter():
 templates = Jinja2Templates(directory=str(BASE / "templates"))
 templates.env.globals["company"] = os.getenv("COMPANY_NAME", "Cloud Reboot")
 Base.metadata.create_all(engine)
+
+
+def _ensure_schema():
+    """Add columns introduced after a DB was first created. No-op on fresh DBs."""
+    from sqlalchemy import text
+    for ddl in ["ALTER TABLE applications ADD COLUMN ai_review TEXT DEFAULT ''"]:
+        try:
+            with engine.begin() as conn:
+                conn.execute(text(ddl))
+        except Exception:
+            pass  # column already exists
+
+
+_ensure_schema()
 
 
 def _bootstrap_recruiter():

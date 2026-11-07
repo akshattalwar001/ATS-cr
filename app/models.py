@@ -57,6 +57,7 @@ class Application(Base):
     breakdown: Mapped[dict] = mapped_column(JSON, default=dict)
     explanation: Mapped[str] = mapped_column(Text, default="")
     knocked_out: Mapped[bool] = mapped_column(Boolean, default=False)
+    ai_review: Mapped[str] = mapped_column(Text, default="")  # final narrative review (Groq)
     # auto_status is the machine suggestion; status is the human-confirmed state
     auto_status: Mapped[str] = mapped_column(String(20), default="pending")  # pending, shortlist, review, reject
     status: Mapped[str] = mapped_column(String(20), default="new")  # new, shortlisted, hold, rejected
