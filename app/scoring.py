@@ -23,7 +23,7 @@ def rule_score(masked_text: str, job) -> dict:
     have = EDU_RANK.get(parsed["education"], 0)
     edu_pts = W_EDU if have >= need else W_EDU * (have / need if need else 1)
 
-    knock_miss = [k for k in (job.knockouts or []) if k.lower() not in masked_text.lower()]
+    knock_miss = [k for k in (job.knockouts or []) if not _skill_in_text(k, masked_text)]
 
     score = round(req_pts + nice_pts + exp_pts + edu_pts, 1)
     parts = [
@@ -49,9 +49,12 @@ def rule_score(masked_text: str, job) -> dict:
 
 
 def decide(score: float, knocked_out: bool, job) -> str:
-    """Machine suggestion only. 'reject' still needs human confirmation."""
+    """Machine suggestion only. Every non-shortlist outcome still needs human confirmation."""
     if knocked_out:
-        return "reject"
+        # A missing must-have keyword is often a false negative (the resume simply
+        # doesn't phrase it the expected way), so surface it for a person to confirm
+        # rather than silently rejecting an otherwise strong candidate.
+        return "review"
     if score >= job.shortlist_threshold:
         return "shortlist"
     if score < job.reject_threshold:
