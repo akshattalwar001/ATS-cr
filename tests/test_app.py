@@ -60,3 +60,16 @@ def test_full_flow():
 
 def test_bad_login():
     assert client.post("/recruiter/login", data={"email": "r@x.com", "password": "nope"}).status_code == 401
+
+
+def test_knockout_routes_to_review_not_reject():
+    from app.scoring import decide
+    from app.models import Job
+    job = Job(title="Dev", shortlist_threshold=70, reject_threshold=35)
+    # A missing must-have keyword must never bury a strong candidate as "reject".
+    assert decide(100.0, True, job) == "review"
+    assert decide(10.0, True, job) == "review"
+    # Without a knockout, score-based decision is unchanged.
+    assert decide(80.0, False, job) == "shortlist"
+    assert decide(20.0, False, job) == "reject"
+    assert decide(50.0, False, job) == "review"

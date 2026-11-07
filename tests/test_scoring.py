@@ -42,7 +42,15 @@ def test_strong_is_shortlisted_weak_is_rejected():
 def test_knockout():
     r = rule_score(STRONG, job(knockouts=["work permit"]))
     assert r["knocked_out"]
-    assert decide(r["score"], True, job()) == "reject"
+    # A missing must-have keyword routes to human review, not an automatic reject,
+    # so a strong candidate who simply didn't phrase it the expected way isn't buried.
+    assert decide(r["score"], True, job()) == "review"
+
+
+def test_knockout_matches_whole_words_only():
+    # Word-boundary matching: a knockout keyword embedded in another word is a miss.
+    assert rule_score("Experienced permitting specialist", job(knockouts=["permit"]))["knocked_out"]
+    assert not rule_score("Holds a valid work permit.", job(knockouts=["work permit"]))["knocked_out"]
 
 
 def test_masking_removes_identity():
